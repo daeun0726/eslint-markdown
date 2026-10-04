@@ -27,27 +27,15 @@ type RuleOptions = [
      * @default []
      */
     allow: string[];
+    /**
+     * Specifies the characters that are treated as punctuation by this rule.
+     * @default ['.', ',', ';', ':', '!', '?']
+     */
+    punctuation: string[];
   },
 ];
 type MessageIds =
   'noDoublePunctuation' | 'suggestReplaceWithLeft' | 'suggestReplaceWithRight';
-
-// --------------------------------------------------------------------------------
-// Helper
-// --------------------------------------------------------------------------------
-
-const escapedAsciiPunctuationWithQuestionMark = escapeStringRegexp(
-  asciiPunctuationWithQuestionMark.join(''),
-);
-
-/**
- * This pattern is based on the punctuation list used by `remark-lint`.
- * @see https://github.com/remarkjs/remark-lint/tree/main/packages/remark-lint-no-heading-punctuation#parameters
- */
-const doublePunctuationRegex = new RegExp(
-  `(?:^|(?<=[^${escapedAsciiPunctuationWithQuestionMark}]))[${escapedAsciiPunctuationWithQuestionMark}]{2}(?:$|(?=[^${escapedAsciiPunctuationWithQuestionMark}]))`,
-  'g',
-);
 
 // --------------------------------------------------------------------------------
 // Rule Definition
@@ -78,8 +66,17 @@ export default {
               type: 'string',
               minLength: 2,
               maxLength: 2,
-              pattern: `^[${escapedAsciiPunctuationWithQuestionMark}]{2}$`,
             },
+            uniqueItems: true,
+          },
+          punctuation: {
+            type: 'array',
+            items: {
+              type: 'string',
+              minLength: 1,
+              maxLength: 1,
+            },
+            minItems: 1,
             uniqueItems: true,
           },
         },
@@ -90,6 +87,7 @@ export default {
     defaultOptions: [
       {
         allow: [],
+        punctuation: [...asciiPunctuationWithQuestionMark],
       },
     ],
 
@@ -108,7 +106,24 @@ export default {
 
   create(context) {
     const { sourceCode } = context;
-    const [{ allow }] = context.options;
+    const [{ allow, punctuation: punctuationCharacters }] = context.options;
+
+    for (const pattern of allow) {
+      for (const character of pattern) {
+        if (!punctuationCharacters.includes(character)) {
+          throw new Error(
+            `The \`allow\` pattern \`${pattern}\` contains \`${character}\`, which is not included in the \`punctuation\` option.`,
+          );
+        }
+      }
+    }
+
+    // Create a regex pattern based on the allowed punctuation characters
+    const escapedPunctuation = escapeStringRegexp(punctuationCharacters.join(''));
+    const doublePunctuationRegex = new RegExp(
+      `(?:^|(?<=[^${escapedPunctuation}]))[${escapedPunctuation}]{2}(?:$|(?=[^${escapedPunctuation}]))`,
+      'gu',
+    );
 
     return {
       text(node) {
