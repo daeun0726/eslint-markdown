@@ -50,7 +50,6 @@ const htmlEntityRegex = new RegExp(originalHtmlEntityRegex.source, 'g');
 
 // Rule Definition
 
-
 export default {
   meta: {
     type: 'problem',
