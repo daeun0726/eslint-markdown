@@ -8,7 +8,12 @@
 // --------------------------------------------------------------------------------
 
 import { escapeStringRegexp } from '../core/utils/index.js';
-import { URL_RULE_DOCS, asciiPunctuationWithQuestionMark } from '../core/constants.js';
+import {
+  URL_RULE_DOCS,
+  asciiPunctuationWithQuestionMark,
+  gemojiRegex as originalGemojiRegex,
+  htmlEntityRegex as originalHtmlEntityRegex,
+} from '../core/constants.js';
 import type { RuleModule } from '../core/types.js';
 
 // --------------------------------------------------------------------------------
@@ -37,9 +42,14 @@ type RuleOptions = [
 type MessageIds =
   'noDoublePunctuation' | 'suggestReplaceWithLeft' | 'suggestReplaceWithRight';
 
-// --------------------------------------------------------------------------------
+// Helper
+
+const gemojiRegex = new RegExp(originalGemojiRegex.source, 'g');
+
+const htmlEntityRegex = new RegExp(originalHtmlEntityRegex.source, 'g');
+
 // Rule Definition
-// --------------------------------------------------------------------------------
+
 
 export default {
   meta: {
@@ -128,7 +138,11 @@ export default {
     return {
       text(node) {
         const [nodeStartOffset] = sourceCode.getRange(node);
-        const matches = sourceCode.getText(node).matchAll(doublePunctuationRegex);
+        const matches = sourceCode
+          .getText(node) // Mask HTML entities and gemoji without changing their offsets in the original text.
+          .replace(gemojiRegex, match => ' '.repeat(match.length))
+          .replace(htmlEntityRegex, match => ' '.repeat(match.length))
+          .matchAll(doublePunctuationRegex);
 
         for (const match of matches) {
           const punctuation = match[0];
