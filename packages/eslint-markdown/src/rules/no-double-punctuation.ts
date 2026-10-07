@@ -42,13 +42,17 @@ type RuleOptions = [
 type MessageIds =
   'noDoublePunctuation' | 'suggestReplaceWithLeft' | 'suggestReplaceWithRight';
 
+// --------------------------------------------------------------------------------
 // Helper
+// --------------------------------------------------------------------------------
 
 const gemojiRegex = new RegExp(originalGemojiRegex.source, 'g');
 
 const htmlEntityRegex = new RegExp(originalHtmlEntityRegex.source, 'g');
 
+// --------------------------------------------------------------------------------
 // Rule Definition
+// --------------------------------------------------------------------------------
 
 export default {
   meta: {
@@ -116,16 +120,6 @@ export default {
   create(context) {
     const { sourceCode } = context;
     const [{ allow, punctuation: punctuationCharacters }] = context.options;
-
-    for (const pattern of allow) {
-      for (const character of pattern) {
-        if (!punctuationCharacters.includes(character)) {
-          throw new Error(
-            `The \`allow\` pattern \`${pattern}\` contains \`${character}\`, which is not included in the \`punctuation\` option.`,
-          );
-        }
-      }
-    }
 
     // Create a regex pattern based on the allowed punctuation characters
     const escapedPunctuation = escapeStringRegexp(punctuationCharacters.join(''));

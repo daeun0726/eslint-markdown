@@ -7,10 +7,6 @@
 // Import
 // --------------------------------------------------------------------------------
 
-import { assert, describe, it } from 'vitest';
-import { Linter } from 'eslint/universal';
-import markdown from '@eslint/markdown';
-import md from '../index.js';
 import ruleTester from '../tests/rule-tester.js';
 import rule from './no-double-punctuation.js';
 
@@ -742,36 +738,71 @@ Baz:`,
         },
       ],
     },
+    {
+      code: 'Foo]]',
+      output: 'Foo]',
+      options: [
+        {
+          punctuation: [']'],
+        },
+      ],
+      errors: [
+        {
+          messageId: 'noDoublePunctuation',
+          line: 1,
+          column: 4,
+          endLine: 1,
+          endColumn: 6,
+          data: {
+            punctuation: ']]',
+          },
+          suggestions: undefined,
+        },
+      ],
+    },
+    {
+      code: 'Foo--',
+      output: 'Foo-',
+      options: [
+        {
+          punctuation: ['-'],
+        },
+      ],
+      errors: [
+        {
+          messageId: 'noDoublePunctuation',
+          line: 1,
+          column: 4,
+          endLine: 1,
+          endColumn: 6,
+          data: {
+            punctuation: '--',
+          },
+          suggestions: undefined,
+        },
+      ],
+    },
+    {
+      code: 'Foo\\\\',
+      output: 'Foo\\',
+      options: [
+        {
+          punctuation: ['\\'],
+        },
+      ],
+      errors: [
+        {
+          messageId: 'noDoublePunctuation',
+          line: 1,
+          column: 4,
+          endLine: 1,
+          endColumn: 6,
+          data: {
+            punctuation: '\\\\',
+          },
+          suggestions: undefined,
+        },
+      ],
+    },
   ],
-});
-
-describe('no-double-punctuation options', () => {
-  it('should throw when `allow` uses a character not in `punctuation`', () => {
-    const linter = new Linter();
-
-    assert.throws(
-      () =>
-        linter.verify(
-          'Foo!!',
-          [
-            {
-              files: ['**/*.md'],
-              language: 'markdown/gfm',
-              plugins: {
-                markdown,
-                md,
-              },
-              rules: {
-                'md/no-double-punctuation': [
-                  'error',
-                  { punctuation: ['.', '!'], allow: ['??'] },
-                ],
-              },
-            },
-          ],
-          { filename: 'test.md' },
-        ),
-      /is not included in the `punctuation` option/,
-    );
-  });
 });
