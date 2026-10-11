@@ -86,6 +86,30 @@ ruleTester('no-double-punctuation', rule, {
         },
       ],
     },
+    {
+      code: 'Foo 💥',
+      options: [
+        {
+          punctuation: ['💥'],
+        },
+      ],
+    },
+    {
+      code: 'Foo&excl;&excl;',
+      options: [
+        {
+          punctuation: ['!'],
+        },
+      ],
+    },
+    {
+      code: 'Foo&quest;&quest;',
+      options: [
+        {
+          punctuation: ['?'],
+        },
+      ],
+    },
   ],
 
   invalid: [
@@ -799,6 +823,28 @@ Baz:`,
           endColumn: 6,
           data: {
             punctuation: '\\\\',
+          },
+          suggestions: undefined,
+        },
+      ],
+    },
+    {
+      code: 'Foo 💥💥',
+      output: 'Foo 💥',
+      options: [
+        {
+          punctuation: ['💥'],
+        },
+      ],
+      errors: [
+        {
+          messageId: 'noDoublePunctuation',
+          line: 1,
+          column: 5,
+          endLine: 1,
+          endColumn: 9,
+          data: {
+            punctuation: '💥💥',
           },
           suggestions: undefined,
         },
