@@ -101,6 +101,8 @@ Specifies the characters that are treated as punctuation by this rule.
 
 The configured array replaces the default punctuation characters. Each item must be a single character, and at least one character is required.
 
+NOTE: Spaces, tabs, line feeds, carriage returns, and backslashes are not allowed.
+
 ## Fix
 
 This rule provides a fix when two punctuation marks are the same by replacing the pair with a single punctuation mark. For example, `!!` is fixed to `!`, and `..` is fixed to `.`.
