@@ -39,15 +39,6 @@ This usually means a typo!.
 Maybe this..
 ```
 
-#### With `{ allow: ['!!'], punctuation: ['!', '?'] }` Option
-
-```md eslint-check
-<!-- eslint md/no-double-punctuation: ['error', { allow: ['!!'], punctuation: ['!', '?'] }] -->
-
-Really!!
-Did you mean this?!
-```
-
 ### :white_check_mark: Correct {#correct}
 
 Examples of **correct** code for this rule:
@@ -96,7 +87,11 @@ Did you mean this?!
 
 When `allow` is specified, the listed two-character punctuation patterns are ignored by this rule. This is useful when punctuation such as `!!` or `?!` is intentionally used for tone or emphasis instead of being treated as a typo.
 
-Each pattern must only use characters listed in `punctuation`, otherwise the rule fails to load.
+::: warning
+
+Patterns in [`allow`](#allow) containing characters outside [`punctuation`](#punctuation) are silently ignored.
+
+:::
 
 ### `punctuation`
 
