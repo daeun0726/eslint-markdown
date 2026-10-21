@@ -34,6 +34,8 @@ type RuleOptions = [
     allow: string[];
     /**
      * Specifies the characters that are treated as punctuation by this rule.
+     *
+     * The configured array replaces the default punctuation characters. Each item must be a single character, and at least one character is required.
      * @default ['.', ',', ';', ':', '!', '?']
      */
     punctuation: string[];
@@ -119,10 +121,10 @@ export default {
 
   create(context) {
     const { sourceCode } = context;
-    const [{ allow, punctuation: punctuationCharacters }] = context.options;
+    const [{ allow, punctuation }] = context.options;
 
     // Create a regex pattern based on the allowed punctuation characters
-    const escapedPunctuation = escapeStringRegexp(punctuationCharacters.join(''));
+    const escapedPunctuation = escapeStringRegexp(punctuation.join(''));
     const doublePunctuationRegex = new RegExp(
       `(?:^|(?<=[^${escapedPunctuation}]))[${escapedPunctuation}]{2}(?:$|(?=[^${escapedPunctuation}]))`,
       'gu',
@@ -138,14 +140,14 @@ export default {
           .matchAll(doublePunctuationRegex);
 
         for (const match of matches) {
-          const punctuation = match[0];
+          const matchedPunctuation = match[0];
 
           const startOffset = nodeStartOffset + match.index;
-          const endOffset = startOffset + punctuation.length;
+          const endOffset = startOffset + matchedPunctuation.length;
 
-          if (allow.includes(punctuation)) continue;
+          if (allow.includes(matchedPunctuation)) continue;
 
-          const [leftPunctuation, rightPunctuation] = punctuation;
+          const [leftPunctuation, rightPunctuation] = matchedPunctuation;
           const violation = {
             loc: {
               start: sourceCode.getLocFromIndex(startOffset),
@@ -153,7 +155,7 @@ export default {
             },
 
             data: {
-              punctuation,
+              punctuation: matchedPunctuation,
             },
 
             messageId: 'noDoublePunctuation',
@@ -176,7 +178,7 @@ export default {
                   messageId: 'suggestReplaceWithLeft',
 
                   data: {
-                    punctuation,
+                    punctuation: matchedPunctuation,
                     leftPunctuation,
                   },
 
@@ -191,7 +193,7 @@ export default {
                   messageId: 'suggestReplaceWithRight',
 
                   data: {
-                    punctuation,
+                    punctuation: matchedPunctuation,
                     rightPunctuation,
                   },
 
