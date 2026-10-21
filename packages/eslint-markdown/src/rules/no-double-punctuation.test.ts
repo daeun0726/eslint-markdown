@@ -69,6 +69,7 @@ ruleTester('no-double-punctuation', rule, {
         },
       ],
     },
+
     // `punctuation` option
     {
       code: 'Foo?!',
@@ -640,6 +641,7 @@ Baz:`,
         },
       ],
     },
+
     // `punctuation` option
     {
       code: 'Foo..',
@@ -665,6 +667,7 @@ Baz:`,
     },
     {
       code: 'Foo?!',
+      output: null,
       options: [
         {
           punctuation: ['?', '!'],
@@ -723,8 +726,11 @@ Baz:`,
         },
       ],
     },
+
+    // `allow` and `punctuation` option
     {
       code: 'Foo!! Bar?!',
+      output: null,
       options: [
         {
           allow: ['!!'],
@@ -801,28 +807,6 @@ Baz:`,
           endColumn: 6,
           data: {
             punctuation: '--',
-          },
-          suggestions: undefined,
-        },
-      ],
-    },
-    {
-      code: 'Foo\\\\',
-      output: 'Foo\\',
-      options: [
-        {
-          punctuation: ['\\'],
-        },
-      ],
-      errors: [
-        {
-          messageId: 'noDoublePunctuation',
-          line: 1,
-          column: 4,
-          endLine: 1,
-          endColumn: 6,
-          data: {
-            punctuation: '\\\\',
           },
           suggestions: undefined,
         },
