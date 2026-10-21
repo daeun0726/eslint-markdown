@@ -123,7 +123,6 @@ export default {
     const { sourceCode } = context;
     const [{ allow, punctuation }] = context.options;
 
-    // Create a regex pattern based on the allowed punctuation characters
     const escapedPunctuation = escapeStringRegexp(punctuation.join(''));
     const doublePunctuationRegex = new RegExp(
       `(?:^|(?<=[^${escapedPunctuation}]))[${escapedPunctuation}]{2}(?:$|(?=[^${escapedPunctuation}]))`,
