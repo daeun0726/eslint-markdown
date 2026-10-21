@@ -111,6 +111,26 @@ ruleTester('no-double-punctuation', rule, {
         },
       ],
     },
+
+    // `allow` and `punctuation` option
+    {
+      code: 'Foo++',
+      options: [
+        {
+          allow: ['++'],
+          punctuation: ['+'],
+        },
+      ],
+    },
+    {
+      code: 'Foo??',
+      options: [
+        {
+          allow: ['??'],
+          punctuation: ['!'],
+        },
+      ],
+    },
   ],
 
   invalid: [
