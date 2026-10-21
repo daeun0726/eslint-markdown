@@ -726,48 +726,6 @@ Baz:`,
         },
       ],
     },
-
-    // `allow` and `punctuation` option
-    {
-      code: 'Foo!! Bar?!',
-      output: null,
-      options: [
-        {
-          allow: ['!!'],
-          punctuation: ['!', '?'],
-        },
-      ],
-      errors: [
-        {
-          messageId: 'noDoublePunctuation',
-          line: 1,
-          column: 10,
-          endLine: 1,
-          endColumn: 12,
-          data: {
-            punctuation: '?!',
-          },
-          suggestions: [
-            {
-              output: 'Foo!! Bar?',
-              messageId: 'suggestReplaceWithLeft',
-              data: {
-                punctuation: '?!',
-                leftPunctuation: '?',
-              },
-            },
-            {
-              output: 'Foo!! Bar!',
-              messageId: 'suggestReplaceWithRight',
-              data: {
-                punctuation: '?!',
-                rightPunctuation: '!',
-              },
-            },
-          ],
-        },
-      ],
-    },
     {
       code: 'Foo]]',
       output: 'Foo]',
@@ -831,6 +789,48 @@ Baz:`,
             punctuation: '💥💥',
           },
           suggestions: undefined,
+        },
+      ],
+    },
+
+    // `allow` and `punctuation` option
+    {
+      code: 'Foo!! Bar?!',
+      output: null,
+      options: [
+        {
+          allow: ['!!'],
+          punctuation: ['!', '?'],
+        },
+      ],
+      errors: [
+        {
+          messageId: 'noDoublePunctuation',
+          line: 1,
+          column: 10,
+          endLine: 1,
+          endColumn: 12,
+          data: {
+            punctuation: '?!',
+          },
+          suggestions: [
+            {
+              output: 'Foo!! Bar?',
+              messageId: 'suggestReplaceWithLeft',
+              data: {
+                punctuation: '?!',
+                leftPunctuation: '?',
+              },
+            },
+            {
+              output: 'Foo!! Bar!',
+              messageId: 'suggestReplaceWithRight',
+              data: {
+                punctuation: '?!',
+                rightPunctuation: '!',
+              },
+            },
+          ],
         },
       ],
     },
