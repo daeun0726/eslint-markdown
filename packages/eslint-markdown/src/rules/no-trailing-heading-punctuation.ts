@@ -11,6 +11,7 @@ import { escapeStringRegexp } from '../core/utils/index.js';
 import {
   URL_RULE_DOCS,
   punctuation as defaultPunctuation,
+  asciiPunctuationRegex,
   escapedTrailingBackslashRegex,
   gemojiRegex,
   htmlEntityRegex,
@@ -240,6 +241,8 @@ export default {
                 Number(
                   // When `leadingSpaces` is `''` (empty string), check for an escaped trailing backslash.
                   !leadingSpaces &&
+                    // The preceding backslash is an escape only when the punctuation is escapable.
+                    asciiPunctuationRegex.test(trailingPunctuation[0]) &&
                     escapedTrailingBackslashRegex.test(
                       lastChildText.slice(0, -trailingPunctuation.length),
                     ),
